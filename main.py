@@ -15,7 +15,7 @@ main_admin = ReplyKeyboardMarkup(resize_keyboard=True)
 main_admin.add('Каталог').add('Корзина').add('Поддержка').add('Админ-панель')
 
 admin_panel = ReplyKeyboardMarkup(resize_keyboard=True)
-admin_panel.add('Добавить товар').add('Удалить товар').add('Сделать рассылку')
+admin_panel.add('Добавить товар').add('Удалить товар').add('Сделать рассылку').add('Назад')
 
 
 @dp.message_handler(commands=['start'])
@@ -40,7 +40,7 @@ async def cart(message: types.Message):
 @dp.message_handler(text='Поддержка')
 async def support(message: types.Message):
     await message.answer(
-        f'Появились какие нибудь вопросы при использовании бота? тогда обратитесь к администратору: @d_27d')
+        f'Появились какие нибудь вопросы при использовании бота? Tогда обратитесь к администратору: @d_27d')
 
 
 @dp.message_handler(text='Админ-панель')
