@@ -1,6 +1,7 @@
 from aiogram import Dispatcher, Bot, types, executor
 import os
-from aiogram.types import ReplyKeyboardMarkup
+from app import keyboards as kb
+from app import database as db
 # python-dotenv предназначен для загрузки переменных среды из файла .env в ваш проект
 from dotenv import load_dotenv
 
@@ -8,28 +9,24 @@ load_dotenv()
 bot = Bot(os.getenv('TOKEN'))
 dp = Dispatcher(bot=bot)
 
-main = ReplyKeyboardMarkup(resize_keyboard=True)
-main.add('Каталог').add('Корзина').add('Поддержка')
 
-main_admin = ReplyKeyboardMarkup(resize_keyboard=True)
-main_admin.add('Каталог').add('Корзина').add('Поддержка').add('Админ-панель')
-
-admin_panel = ReplyKeyboardMarkup(resize_keyboard=True)
-admin_panel.add('Добавить товар').add('Удалить товар').add('Сделать рассылку').add('Назад')
+async def on_startup(_):
+    await db.db_start()
+    print(122222)
 
 
 @dp.message_handler(commands=['start'])
 async def cmd_start(message: types.Message):
     await message.answer_sticker('CAACAgIAAxkBAAMZZZkTNWGshfvcDGvyEurkrOVmdBgAAnASAAKNbhlIUVJC-YI7dVg0BA')
     await message.answer(f'{message.from_user.first_name} добро пожаловать в магазин кроссовок!',
-                         reply_markup=main)
+                         reply_markup=kb.main)
     if message.from_user.id == int(os.getenv('ADMIN_ID')):
-        await message.answer(f'Вы авторизовались как админ!', reply_markup=main_admin)
+        await message.answer(f'Вы авторизовались как админ!', reply_markup=kb.main_admin)
 
 
 @dp.message_handler(text='Каталог')
 async def catalog(message: types.Message):
-    await message.answer(f'Каталог пуст!')
+    await message.answer(f'Каталог пуст!', reply_markup=kb.catalog_list)
 
 
 @dp.message_handler(text='Корзина')
@@ -46,7 +43,7 @@ async def support(message: types.Message):
 @dp.message_handler(text='Админ-панель')
 async def panel_admin(message: types.Message):
     if message.from_user.id == int(os.getenv('ADMIN_ID')):
-        await message.answer('Вы вошли в панель администратора', reply_markup=admin_panel)
+        await message.answer('Вы вошли в панель администратора', reply_markup=kb.admin_panel)
     else:
         await message.reply('Я тебя не понимаю')
 
